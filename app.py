@@ -12,6 +12,7 @@ import logging
 from logging import Formatter, FileHandler
 from flask_wtf import Form
 from forms import *
+from flask_migrate import Migrate
 #----------------------------------------------------------------------------#
 # App Config.
 #----------------------------------------------------------------------------#
@@ -20,6 +21,7 @@ app = Flask(__name__)
 moment = Moment(app)
 app.config.from_object('config')
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 # TODO: connect to a local postgresql database
 
@@ -106,6 +108,22 @@ def venues():
       "id": 2,
       "name": "The Dueling Pianos Bar",
       "num_upcoming_shows": 0,
+    },{
+      "id" : 5,
+      "name" : "Santa Monica Main Street",
+      "num_upcoming_shows" : 0
+    }]
+  },{
+    "city": "Los Angeles",
+    "state": "CA",
+    "venues": [{
+      "id" : 8,
+      "name": "Yankees Stadium",
+      "num_upcoming_shows": 2
+    },{
+      "id": 9,
+      "name": "Malibu Beach",
+      "num_upcoming_shows": 3
     }]
   }]
   return render_template('pages/venues.html', areas=data);
