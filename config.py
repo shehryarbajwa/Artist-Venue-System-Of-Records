@@ -8,8 +8,9 @@ DEBUG = True
 
 # Connect to the database
 
+DBNAME = 'postgres://shehryarbajwa@localhost:5432/fyyur'
 
 # TODO IMPLEMENT DATABASE URL
 
-SQLALCHEMY_DATABASE_URI = 'postgres://shehryarbajwa@localhost:5432/fyyur'
+SQLALCHEMY_DATABASE_URI = DBNAME
 SQLALCHEMY_TRACK_MODIFICATIONS = False

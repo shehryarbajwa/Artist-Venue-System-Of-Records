@@ -4,26 +4,28 @@ from flask_migrate import Migrate
 
 db = SQLAlchemy()
 
-app.config.from_object('config')
-db.app = app
-db.init_app(app)
-
+def create_app(app):
+    app.config.from_object('config')
+    db.init_app(app)
+    db.app = app
+    migrate = Migrate(app, db)
+    return db
 
 class Venue(db.Model):
     __tablename__ = 'Venue'
 
-    id = db.Column(Integer, primary_key=True)
-    name = db.Column(String)
-    genres = db.Column(ARRAY(String))
-    address = db.Column(String(120))
-    city = db.Column(String(120))
-    state = db.Column(String(120))
-    phone = db.Column(String(120))
-    website = db.Column(String(120))
-    facebook_link = db.Column(String(120))
-    seeking_talent = db.Column(Boolean)
-    seeking_description = db.Column(String(500))
-    image_link = db.Column(String(500))
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String)
+    genres = db.Column(db.ARRAY(db.String))
+    address = db.Column(db.String(120))
+    city = db.Column(db.String(120))
+    state = db.Column(db.String(120))
+    phone = db.Column(db.String(120))
+    website = db.Column(db.String(120))
+    facebook_link = db.Column(db.String(120))
+    seeking_talent = db.Column(db.Boolean)
+    seeking_description = db.Column(db.String(500))
+    image_link = db.Column(db.String(500))
     shows = db.relationship('Show', backref="Venue", lazy="dynamic")
 
     # TODO: implement any missing fields, as a database migration using Flask-Migrate
@@ -84,9 +86,6 @@ class Venue(db.Model):
             'seeking_description': self.seeking_description,
             'image_link': self.image_link
         }
-
-
-
 
 
 class Artist(db.Model):
@@ -151,7 +150,7 @@ class Show(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     venue_id = db.Column(db.Integer, db.ForeignKey('Venue.id'), nullable=False)
     artist_id = db.Column(db.Integer, db.ForeignKey('Artist.id'), nullable=False)
-    start_time = db.Column(db.Datetime, nullable=False)
+    start_time = db.Column(db.DateTime, nullable=False)
 
     def __init__(self, venue_id, artist_id, start_time):
         self.venue_id = venue_id
@@ -172,4 +171,28 @@ class Show(db.Model):
             'start_time': self.start_time
         }
 
-    
+    def details(self):
+        return {
+            'venue_id': self.venue_id,
+            'venue_name': self.Venue.name,
+            'artist_id': self.artist_id,
+            'artist_name': self.Artist.name,
+            'artist_image_link': self.Artist.image_link,
+            'start_time': self.start_time
+        }
+
+    def artist_details(self):
+        return {
+            'artist_id': self.artist_id,
+            'artist_name': self.Artist.name,
+            'artist_image_link': self.Artist.image_link,
+            'start_time': self.start_time
+        }
+
+    def venue_details(self):
+        return {
+            'venue_id': self.venue_id,
+            'venue_name': self.Venue.name,
+            'venue_image_link': self.Venue.image_link,
+            'start_time': self.start_time
+        }
