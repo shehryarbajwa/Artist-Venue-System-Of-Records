@@ -33,7 +33,7 @@ class Venue(db.Model):
 
     def __init__(self, name, genres, address, city, state, phone, website, facebook_link, image_link,
                  seeking_talent=False, seeking_description=""):
-        self.name = name
+        self.name = name + 'hello'
         self.genres = genres
         self.address = address
         self.city = city
