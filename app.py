@@ -97,14 +97,16 @@ def search_venues():
   # seach for Hop should return "The Musical Hop".
   # search for "Music" should return "The Musical Hop" and "Park Square Live Music & Coffee"
     venue_query = Venue.query.filter(Venue.name.ilike('%' + request.form['search_term'] + '%'))
-    print(venue_query)
-    venue_query_2 = Venue.query.first()
-    print(venue_query_2)
-    venue_list = list(map(Venue.short, venue_query))
+    for result in venue_query:
+      # print(result.name)
+      # print(result.id)
+    
+      venue_array = list(map(Venue.short, venue_query))
+    
     
     response = {
-      "count": len(venue_list),
-      "data": venue_list
+      "count": len(venue_array),
+      "data": venue_array
     }
     return render_template (
         'pages/search_venues.html',
@@ -116,6 +118,17 @@ def search_venues():
 def show_venue(venue_id):
   # shows the venue page with the given venue_id
   # TODO: replace with real venue data from the venues table, using venue_id
+
+  venue_query = Venue.query.filter(Venue.id == venue_id)
+
+  venue_array = list(map(Venue.details, venue_query))
+  print(venue_array)
+  
+  response = {
+    "data": venue_array
+  }
+
+
   data1={
     "id": 1,
     "name": "The Musical Hop",
@@ -194,7 +207,7 @@ def show_venue(venue_id):
     "upcoming_shows_count": 1,
   }
   data = list(filter(lambda d: d['id'] == venue_id, [data1, data2, data3]))[0]
-  return render_template('pages/show_venue.html', venue=data)
+  return render_template('pages/show_venue.html', results=response)
 
 #  Create Venue
 #  ----------------------------------------------------------------
