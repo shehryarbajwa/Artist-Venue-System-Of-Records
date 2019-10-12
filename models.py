@@ -84,7 +84,7 @@ class Venue(db.Model):
             'seeking_talent': self.seeking_talent,
             'seeking_description': self.seeking_description,
             'image_link': self.image_link
-        }
+            }
 
 
 class Artist(db.Model):
@@ -141,7 +141,7 @@ class Artist(db.Model):
             'facebook_link': self.facebook_link,
             'seeking_venue': self.seeking_venue,
             'seeking_description': self.seeking_description,
-            'image_link': self.image_link,
+            'image_link': self.image_link
         }
 
 class Show(db.Model):
@@ -180,7 +180,7 @@ class Show(db.Model):
             'start_time': self.start_time
         }
 
-    def artist_details(self):
+    def details_artist(self):
         return {
             'artist_id': self.artist_id,
             'artist_name': self.Artist.name,
@@ -188,7 +188,7 @@ class Show(db.Model):
             'start_time': self.start_time
         }
 
-    def venue_details(self):
+    def details_venue(self):
         return {
             'venue_id': self.venue_id,
             'venue_name': self.Venue.name,
