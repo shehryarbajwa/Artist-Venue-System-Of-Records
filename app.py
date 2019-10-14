@@ -155,34 +155,22 @@ def create_venue_submission():
   
   # TODO: on unsuccessful db insert, flash an error instead.
   # e.g., flash('An error occurred. Venue ' + data.name + ' could not be listed.')
-  # see: http://flask.pocoo.org/docs/1.0/patterns/flashing/
+  # see: http://flask.pocoo.org/docs/1.0/patterns/flashin
 
-  form = VenueForm(request.form)
-  if form.validate():
-    print("Hello world")
-    try:
-      new_venue = Venue(
-      name=request.form['name'],
-      genres=request.form.getlist('genres'),
-      address=request.form['address'],
-      city=request.form['city'],
-      state=request.form['state'],
-      phone=request.form['phone'],
-      website=request.form['website'],
-      facebook_link=request.form['facebook_link'],
-      image_link=request.form['image_link'],
-      seeking_talent=seeking_talent,
-      seeking_description=seeking_description,
-      )
-      Venue.insert(new_venue)
-      flash('Venue ' + request.form['name'] + ' was successfully listed!')
-      print("Success")
-    except SQLAlchemyError as e:
-            # TODO: on unsuccessful db insert, flash an error instead.
-            # e.g., flash('An error occurred. Venue ' + data.name + ' could not be listed.')
-            # see: http://flask.pocoo.org/docs/1.0/patterns/flashing/
-      print("something is wrong")
-      flash('An error occurred. Venue ' + request.form['name'] + ' could not be listed.')
+  
+  data = request.form
+  new_venue = Venue(
+    genres=data.getlist("genres"),
+    name=data.get("name"),
+    address=data.get("address"),
+    city=data.get("city"),
+    state=data.get("state"),
+    facebook_link=data.get("facebook_link"),
+    phone=data.get("phone"),
+    website=data.get("website_link"),
+    image_link=data.get("image_link")
+  )
+  Venue.insert(new_venue)
   return render_template('pages/home.html')
 
 @app.route('/venues/<venue_id>', methods=['DELETE'])
