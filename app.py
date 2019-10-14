@@ -123,22 +123,20 @@ def show_venue(venue_id):
     if venue_query:
       venue_details = Venue.details(venue_query)
       current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-      print(current_time)
-      new_shows_query = Show.query.options(db.joinedload('Venue')).filter(Show.venue_id == venue_id).filter(Show.start_time > current_time).all()
+      new_shows_query = Show.query.options(db.joinedload('Artist')).filter(Show.venue_id == venue_id).filter(Show.start_time > current_time).all()
       new_show = list(map(Show.details_artist, new_shows_query))
-      print(new_show)
       venue_details["upcoming_shows"] = new_show
       venue_details["upcoming_shows_count"] = len(new_show)
-      print(venue_details)
-      past_shows_query = Show.query.options(db.joinedload('Venue')).filter(Show.venue_id == venue_id).filter(Show.start_time <= current_time).all()
+      past_shows_query = Show.query.options(db.joinedload('Artist')).filter(Show.venue_id == venue_id).filter(Show.start_time <= current_time).all()
       past_shows = list(map(Show.details_artist, past_shows_query))
       venue_details["past_shows"] = past_shows
       venue_details["past_shows_count"] = len(past_shows)
-      print(venue_details)
+      
 
     # data = list(filter(lambda d: d['id'] == venue_id, [data1, data2, data3]))[0]
       return render_template('pages/show_venue.html', venue=venue_details)
-    # return render_template('errors/404.html')
+    else:
+      return render_template('errors/404.html')
   
 
 #  Create Venue
@@ -146,19 +144,45 @@ def show_venue(venue_id):
 
 @app.route('/venues/create', methods=['GET'])
 def create_venue_form():
-  form = VenueForm()
-  return render_template('forms/new_venue.html', form=form)
+    form = VenueForm()
+    return render_template('forms/new_venue.html', form=form)
 
 @app.route('/venues/create', methods=['POST'])
 def create_venue_submission():
   # TODO: insert form data as a new Venue record in the db, instead
   # TODO: modify data to be the data object returned from db insertion
-
   # on successful db insert, flash success
-  flash('Venue ' + request.form['name'] + ' was successfully listed!')
+  
   # TODO: on unsuccessful db insert, flash an error instead.
   # e.g., flash('An error occurred. Venue ' + data.name + ' could not be listed.')
   # see: http://flask.pocoo.org/docs/1.0/patterns/flashing/
+
+  form = VenueForm(request.form)
+  if form.validate():
+    print("Hello world")
+    try:
+      new_venue = Venue(
+      name=request.form['name'],
+      genres=request.form.getlist('genres'),
+      address=request.form['address'],
+      city=request.form['city'],
+      state=request.form['state'],
+      phone=request.form['phone'],
+      website=request.form['website'],
+      facebook_link=request.form['facebook_link'],
+      image_link=request.form['image_link'],
+      seeking_talent=seeking_talent,
+      seeking_description=seeking_description,
+      )
+      Venue.insert(new_venue)
+      flash('Venue ' + request.form['name'] + ' was successfully listed!')
+      print("Success")
+    except SQLAlchemyError as e:
+            # TODO: on unsuccessful db insert, flash an error instead.
+            # e.g., flash('An error occurred. Venue ' + data.name + ' could not be listed.')
+            # see: http://flask.pocoo.org/docs/1.0/patterns/flashing/
+      print("something is wrong")
+      flash('An error occurred. Venue ' + request.form['name'] + ' could not be listed.')
   return render_template('pages/home.html')
 
 @app.route('/venues/<venue_id>', methods=['DELETE'])
@@ -178,17 +202,11 @@ def delete_venue(venue_id):
 @app.route('/artists')
 def artists():
   # TODO: replace with real data returned from querying the database
-  data=[{
-    "id": 4,
-    "name": "Guns N Petals",
-  }, {
-    "id": 5,
-    "name": "Matt Quevedo",
-  }, {
-    "id": 6,
-    "name": "The Wild Sax Band",
-  }]
-  return render_template('pages/artists.html', artists=data)
+
+  artist_query = Artist.query.all()
+  artist_map = list(map(Artist.short, artist_query))
+  
+  return render_template('pages/artists.html', artists=artist_map)
 
 @app.route('/artists/search', methods=['POST'])
 def search_artists():
