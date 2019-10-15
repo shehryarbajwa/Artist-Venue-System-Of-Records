@@ -192,11 +192,9 @@ class ArtistForm(Form):
         'image_link'
     )
 
-    seeking_venue = SelectField(
-        'seeking_venue', validators=[DataRequired()], choices=
-        [('TRUE', 'TRUE'),
-        ('FALSE', 'FALSE')
-        ]
+    seeking_venue = BooleanField(
+        'seeking_venue', default=False
+        
     )
 
     seeking_description = StringField(
