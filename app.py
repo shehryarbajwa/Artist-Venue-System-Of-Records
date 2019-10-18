@@ -23,7 +23,7 @@ app = Flask(__name__)
 db = create_app(app)
 
 # TODO: connect to a local postgresql database
-
+# Project Complete
 #----------------------------------------------------------------------------#
 # Models.
 #----------------------------------------------------------------------------#
@@ -132,6 +132,7 @@ def show_venue(venue_id):
       past_shows = list(map(Show.details_artist, past_shows_query))
       venue_details["past_shows"] = past_shows
       venue_details["past_shows_count"] = len(past_shows)
+      print(venue_details)
       
 
     # data = list(filter(lambda d: d['id'] == venue_id, [data1, data2, data3]))[0]
@@ -161,7 +162,7 @@ def create_venue_submission():
   data = request.form
   try:
     new_venue = Venue(
-    genres=data.getlist("genres"),
+    genres=data.getlist("genres[]"),
     name=data.get("name"),
     address=data.get("address"),
     city=data.get("city"),
@@ -234,8 +235,6 @@ def show_artist(artist_id):
           print(query.artist_id)
           print(query.venue_id)
           print(query.start_time)
-
-
         upcoming_shows_list = list(map(Show.details_venue, upcoming_shows_query))
         artist_details["upcoming_shows"] = upcoming_shows_list
         artist_details["upcoming_shows_count"] = len(upcoming_shows_list)
@@ -243,6 +242,7 @@ def show_artist(artist_id):
         past_shows_list = list(map(Show.details_venue, past_shows_query))
         artist_details["past_shows"] = past_shows_list
         artist_details["past_shows_count"] = len(past_shows_list)
+        print(artist_details)
         return render_template('pages/show_artist.html', artist=artist_details)
   return render_template('errors/404.html')
   
@@ -277,7 +277,7 @@ def edit_artist_submission(artist_id):
 
   if artist_query:
     setattr(artist_query, 'name', request.form.get('name'))
-    setattr(artist_query, 'genres', request.form.getlist('genres'))
+    setattr(artist_query, 'genres', request.form.get('genres'))
     setattr(artist_query, 'city', request.form.get('city'))
     setattr(artist_query, 'state', request.form.get('state'))
     setattr(artist_query, 'phone', request.form.get('phone'))
@@ -358,7 +358,7 @@ def create_artist_submission():
 
     new_artist = Artist(
         name=data.get("name"),
-        genres=data.getlist("genres"),
+        genres=data.getlist("genres[]"),
         city=data.get("city"),
         state=data.get("state"),
         phone=data.get("phone"),
