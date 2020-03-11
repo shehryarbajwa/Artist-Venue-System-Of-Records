@@ -25,11 +25,10 @@ moment = Moment(app)
 app.config.from_object('config')
 heroku = Heroku(app)
 db = SQLAlchemy()
-db.init_app(app)
 migrate = Migrate(app, db)
 
 with app.app_context():
-    db.create_all()
+    db.init_app(app)
 
 
 # TODO: connect to a local postgresql database
