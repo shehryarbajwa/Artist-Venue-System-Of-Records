@@ -1,2 +1,3 @@
 web: gunicorn app:app
-release: python models.py create_app
+release: python manage.py db init
+python manage.py db migrate
