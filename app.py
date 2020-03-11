@@ -20,7 +20,13 @@ from sqlalchemy.exc import SQLAlchemyError
 #----------------------------------------------------------------------------#
 
 app = Flask(__name__)
-db = create_app(app)
+moment = Moment(app)
+app.config.from_object('config')
+db = SQLAlchemy()
+db.init_app(app)
+migrate = Migrate(app, db)
+
+SQLALCHEMY_DATABASE_URI = 'postgres://shehryarbajwa@localhost:5432/fyyur'
 
 # TODO: connect to a local postgresql database
 # Project Complete
@@ -99,8 +105,6 @@ def search_venues():
   # search for "Music" should return "The Musical Hop" and "Park Square Live Music & Coffee"
     venue_query = Venue.query.filter(Venue.name.ilike('%' + request.form['search_term'] + '%'))
     for result in venue_query:
-      # print(result.name)
-      # print(result.id)
     
       venue_array = list(map(Venue.short, venue_query))
     
@@ -132,7 +136,6 @@ def show_venue(venue_id):
       past_shows = list(map(Show.details_artist, past_shows_query))
       venue_details["past_shows"] = past_shows
       venue_details["past_shows_count"] = len(past_shows)
-      print(venue_details)
       
 
     # data = list(filter(lambda d: d['id'] == venue_id, [data1, data2, data3]))[0]
