@@ -26,7 +26,8 @@ db = SQLAlchemy()
 db.init_app(app)
 migrate = Migrate(app, db)
 
-SQLALCHEMY_DATABASE_URI = 'postgres://shehryarbajwa@localhost:5432/fyyur'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+
 
 # TODO: connect to a local postgresql database
 # Project Complete
