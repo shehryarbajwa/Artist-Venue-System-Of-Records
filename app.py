@@ -11,6 +11,7 @@ from flask_sqlalchemy import SQLAlchemy
 import logging
 from logging import Formatter, FileHandler
 from flask_wtf import Form
+from flask_heroku import Heroku
 from forms import *
 from flask_migrate import Migrate
 from models import create_app, Artist, Venue, Show
@@ -22,6 +23,7 @@ from sqlalchemy.exc import SQLAlchemyError
 app = Flask(__name__)
 moment = Moment(app)
 app.config.from_object('config')
+heroku = Heroku(app)
 db = SQLAlchemy()
 db.init_app(app)
 migrate = Migrate(app, db)
